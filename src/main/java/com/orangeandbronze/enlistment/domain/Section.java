@@ -99,6 +99,10 @@ public class Section {
         return room;
     }
 
+    public void checkIfFull() {
+        room.checkIfAtOrOverCapacity(numberOfStudents);
+    }
+
     @Override
     public String toString() {
         return sectionId;
