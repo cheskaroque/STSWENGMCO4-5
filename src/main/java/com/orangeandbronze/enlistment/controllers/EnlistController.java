@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.*;
 import org.springframework.web.servlet.view.*;
 
+import org.hibernate.Session;
+
 import javax.persistence.*;
 import javax.transaction.*;
-import javax.websocket.Session;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -75,7 +76,7 @@ class EnlistController {
         notNull(entityManager);
         Session session = entityManager.unwrap(Session.class);
         notNull(session);
-        //session.update(student);
+        session.update(student);
         userAction.act(student, section);
         sectionRepo.save(section);
         studentRepo.save(student);
