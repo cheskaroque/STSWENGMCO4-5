@@ -52,20 +52,6 @@ class SectionsController {
         return "";
     }
 
-//    public String enlistOrCancel(@ModelAttribute Student student, @RequestParam String sectionId,
-//                                 @RequestParam UserAction userAction) {
-//        Section section = sectionRepo.findById(sectionId).orElseThrow(() -> new NoSuchElementException("no section found for sectionId " + sectionId));
-//        section.checkIfFull();
-//        notNull(entityManager);
-//        Session session = entityManager.unwrap(Session.class);
-//        notNull(session);
-//        session.update(student);
-//        userAction.act(student, section);
-//        sectionRepo.save(section);
-//        studentRepo.save(student);
-//        return "redirect:enlist"; // Post-Redirect-Get pattern
-//    }
-
 
     @ExceptionHandler(EnlistmentException.class)
     public String handleException(RedirectAttributes redirectAttrs, EnlistmentException e) {
