@@ -7,8 +7,9 @@ import org.springframework.ui.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.*;
 
-import java.time.*;
 import java.util.*;
+
+import static org.apache.commons.lang3.Validate.notNull;
 
 @Controller
 @RequestMapping("sections")
@@ -43,8 +44,28 @@ class SectionsController {
     @PostMapping
     public String createSection(@RequestParam String sectionId, @RequestParam String subjectId, @RequestParam Days days,
                                 @RequestParam String start, @RequestParam String end, @RequestParam String roomName, RedirectAttributes redirectAttrs) {
+
+        Section section = sectionRepo.findById(sectionId).orElseThrow(() -> new NoSuchElementException("no section found for sectionId" + sectionId));
+        Subject subject = subjectRepo.findById(subjectId).orElseThrow(() -> new NoSuchElementException("no subject found for subjectId " + subjectId));
+
+        section.checkIfFull();
         return "";
     }
+
+//    public String enlistOrCancel(@ModelAttribute Student student, @RequestParam String sectionId,
+//                                 @RequestParam UserAction userAction) {
+//        Section section = sectionRepo.findById(sectionId).orElseThrow(() -> new NoSuchElementException("no section found for sectionId " + sectionId));
+//        section.checkIfFull();
+//        notNull(entityManager);
+//        Session session = entityManager.unwrap(Session.class);
+//        notNull(session);
+//        session.update(student);
+//        userAction.act(student, section);
+//        sectionRepo.save(section);
+//        studentRepo.save(student);
+//        return "redirect:enlist"; // Post-Redirect-Get pattern
+//    }
+
 
     @ExceptionHandler(EnlistmentException.class)
     public String handleException(RedirectAttributes redirectAttrs, EnlistmentException e) {

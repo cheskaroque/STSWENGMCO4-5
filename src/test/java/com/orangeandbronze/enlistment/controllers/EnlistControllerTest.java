@@ -34,7 +34,7 @@ class EnlistControllerTest {
         Session session = mock(Session.class);
         when(entityManager.unwrap(Session.class)).thenReturn(session);
         controller.setEntityManager(entityManager);
-        String returnVal = controller.enlist(student, sectionId,userAction);
+        String returnVal = controller.enlistOrCancel(student, sectionId,userAction);
         // Then
         // - retrieve the Section object from the DB using sectionId
         verify(sectionRepository).findById(sectionId);
