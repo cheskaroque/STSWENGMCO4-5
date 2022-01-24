@@ -8,14 +8,14 @@ import static org.apache.commons.lang3.StringUtils.*;
 import static org.apache.commons.lang3.Validate.*;
 
 @Entity
-class Room {
+public class Room {
     @Id
     private final String name;
     private final int capacity;
     @OneToMany
     private final Collection<Section> sections = new HashSet<>();
 
-    Room(String name, int capacity, Collection<Section> sections) {
+     Room(String name, int capacity, Collection<Section> sections) {
         notBlank(name);
         isTrue(isAlphanumeric(name), "roomName must be alphanumeric, was: " + name);
         isTrue(capacity > 0, "capacity must be greater than zero, was: " + capacity);
@@ -26,7 +26,7 @@ class Room {
         this.sections.removeIf(Objects::isNull);
     }
 
-    Room(String roomName, int capacity) {
+    public Room(String roomName, int capacity) {
         this(roomName, capacity, Collections.emptyList());
     }
 

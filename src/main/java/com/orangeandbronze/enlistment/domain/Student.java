@@ -30,7 +30,7 @@ public class Student {
         this.subjectsTaken.removeIf(Objects::isNull);
     }
 
-    Student(int studentNumber, String firstname, String lastname) {
+    public Student(int studentNumber, String firstname, String lastname) {
         this(studentNumber, firstname, lastname, Collections.emptyList(), Collections.emptyList());
     }
 

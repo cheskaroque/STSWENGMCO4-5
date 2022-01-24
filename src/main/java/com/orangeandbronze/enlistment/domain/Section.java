@@ -21,7 +21,7 @@ public class Section {
     @Transient
     private final ReentrantLock lock = new ReentrantLock();
 
-    Section(String sectionId, Subject subject, Schedule schedule, Room room) {
+    public Section(String sectionId, Subject subject, Schedule schedule, Room room) {
         notBlank(sectionId,
                 "sectionId can't be null, empty or whitespace ");
         notNull(subject);
