@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.*;
 import org.springframework.web.servlet.view.*;
 
-import org.hibernate.Session;
-
 import javax.persistence.*;
 import javax.transaction.*;
+//import javax.websocket.Session;
+import org.hibernate.Session;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import static org.apache.commons.lang3.Validate.*;
 
 
 @Transactional
@@ -66,22 +66,38 @@ class EnlistController {
         return "enlist";
     }
 
-
     @Retryable(ObjectOptimisticLockingFailureException.class)
     @PostMapping
-    public String enlistOrCancel(@ModelAttribute Student student, @RequestParam String sectionId,
-                                 @RequestParam UserAction userAction) {
-        Section section = sectionRepo.findById(sectionId).orElseThrow(() -> new NoSuchElementException("no section found for sectionId " + sectionId));
+    public String enlist(@ModelAttribute Student student, @RequestParam String sectionId,
+                         @RequestParam UserAction userAction){
+        Section section = sectionRepo.findById(sectionId).orElseThrow(() -> new NoSuchElementException(
+                "no section found with sectionId" + sectionId));
         section.checkIfFull();
-        notNull(entityManager);
         Session session = entityManager.unwrap(Session.class);
         notNull(session);
         session.update(student);
-        userAction.act(student, section);
-        sectionRepo.save(section);
+        student.enlist(section);
         studentRepo.save(student);
-        return "redirect:enlist"; // Post-Redirect-Get pattern
+        sectionRepo.save(section);
+        return "redirect:enlist";
     }
+
+
+//    @Retryable(ObjectOptimisticLockingFailureException.class)
+//    @PostMapping
+//    public String enlistOrCancel(@ModelAttribute Student student, @RequestParam String sectionId,
+//                                 @RequestParam UserAction userAction) {
+//        Section section = sectionRepo.findById(sectionId).orElseThrow(() -> new NoSuchElementException("no section found for sectionId " + sectionId));
+//        section.checkIfFull();
+//        notNull(entityManager);
+//        Session session = entityManager.unwrap(Session.class);
+//        notNull(session);
+//        //session.update(student);
+//        userAction.act(student, section);
+//        sectionRepo.save(section);
+//        studentRepo.save(student);
+//        return "redirect:enlist"; // Post-Redirect-Get pattern
+//    }
 
 
     @ExceptionHandler(EnlistmentException.class)
