@@ -1,5 +1,7 @@
 package com.orangeandbronze.enlistment.domain;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.util.*;
 import java.util.concurrent.locks.*;
@@ -18,6 +20,9 @@ public class Section {
     @ManyToOne
     private final Room room;
     private int numberOfStudents = 0;
+    @Version
+    @ColumnDefault("0")
+    private final int version = 0;
     @Transient
     private final ReentrantLock lock = new ReentrantLock();
 
