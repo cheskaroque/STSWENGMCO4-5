@@ -6,6 +6,7 @@ import java.time.*;
 import static org.apache.commons.lang3.Validate.*;
 
 @Embeddable
+public
 class Period {
 
     private final LocalTime startTime;
