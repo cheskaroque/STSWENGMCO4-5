@@ -6,9 +6,12 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 @Embeddable
 public class Schedule {
-    private final Days days;
+    private Days days;
     @Embedded
-    private final Period period;
+    private Period period;
+
+    public Schedule(){
+    }
 
     public Schedule(Days days, Period period) {
         notNull(days);

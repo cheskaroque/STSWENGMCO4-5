@@ -16,13 +16,14 @@ import org.hibernate.Session;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
-
+import org.springframework.context.annotation.ComponentScan;
 import static org.apache.commons.lang3.Validate.*;
 
 
 @Transactional
 @Controller
-@RequestMapping("enlist")
+@ComponentScan("com.orangeandbronze.enlistment")
+@RequestMapping("/enlist")
 @SessionAttributes("student")
 class EnlistController {
 
