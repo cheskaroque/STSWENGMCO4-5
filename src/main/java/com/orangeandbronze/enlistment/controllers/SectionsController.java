@@ -3,6 +3,7 @@ package com.orangeandbronze.enlistment.controllers;
 import com.orangeandbronze.enlistment.domain.*;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.*;
 import org.springframework.ui.*;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ class SectionsController {
         return "sections";
     }
 
+    @Retryable
     @PostMapping
     public String createSection(@RequestParam String sectionId, @RequestParam String subjectId, @RequestParam Days days,
                                 @RequestParam String start, @RequestParam String end, @RequestParam String roomName, RedirectAttributes redirectAttrs) {

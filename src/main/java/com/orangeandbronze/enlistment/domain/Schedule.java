@@ -47,8 +47,8 @@ public class Schedule {
     }
 
     // For JPA only! Do not call!
-    private Schedule() {
-        days = null;
+    public Schedule(Days days, String start, String end) {
+        this.days = null;
         period = null;
     }
 }
