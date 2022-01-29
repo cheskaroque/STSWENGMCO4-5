@@ -34,14 +34,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @SpringBootTest
 class EnlistControllerIT {
-
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private StudentRepository studentRepository;
 
@@ -58,30 +54,21 @@ class EnlistControllerIT {
         registry.add("spring.datasource.username", () -> TEST);
     }
 
-
     @Test
     void enlist_student_in_section() throws Exception {
-
-        // Given in the DB: a student and a section
-
-        jdbcTemplate.update("INSERT INTO student (student_number, firstname, lastname) VALUES (?,?,?)",
-                DEFAULT_STUDENT_NUMBER, "firstname", "lastname");
-
+        jdbcTemplate.update("INSERT INTO student (student_number, firstname, lastname) VALUES (?,?,?)", DEFAULT_STUDENT_NUMBER, "firstname", "lastname");
 
         final String roomName = "defaultRoom";
         jdbcTemplate.update("INSERT INTO room (name, capacity) VALUES (?, ?)", roomName, 10);
         jdbcTemplate.update("INSERT INTO subject (subject_id) VALUES (?)", DEFAULT_SUBJECT.toString());
         jdbcTemplate.update(
                 "INSERT INTO section(section_id, number_of_students, days, start_time, end_time, room_name, subject_subject_id) " +
-                        " VALUES (?, ?, ?, ?, ?, ?, ?)",
-                DEFAULT_SECTION_ID, 0, Days.MTH.ordinal(), LocalTime.of(9,0), LocalTime.of(10,0), roomName, DEFAULT_SUBJECT.toString());
+                        " VALUES (?, ?, ?, ?, ?, ?, ?)", DEFAULT_SECTION_ID, 0, Days.MTH.ordinal(), LocalTime.of(9,0), LocalTime.of(10,0), roomName, DEFAULT_SUBJECT.toString());
 
-        // Invoke a POST
         Student student = studentRepository.findById(DEFAULT_STUDENT_NUMBER).orElseThrow(() ->
                 new NoSuchElementException("No student w/ student num " + DEFAULT_STUDENT_NUMBER + " found in DB."));
         mockMvc.perform(post("/enlist").sessionAttr("student", student).param("sectionId", DEFAULT_SECTION_ID)
                 .param("userAction", ENLIST.name()));
-
 
         int count = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM student_sections WHERE student_student_number = ? AND sections_section_id = ?",
@@ -187,7 +174,6 @@ class EnlistControllerIT {
         }
         latch.countDown();
         Thread.sleep(5000);
-
     }
 
     private static class EnlistmentThread extends Thread{
@@ -195,7 +181,6 @@ class EnlistControllerIT {
         private final Student student;
         private final CountDownLatch latch;
         private final MockMvc mockMvc;
-
 
         public EnlistmentThread(Student student, CountDownLatch latch, MockMvc mockMvc){
 
