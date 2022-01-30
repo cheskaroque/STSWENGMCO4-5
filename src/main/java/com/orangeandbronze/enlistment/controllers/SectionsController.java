@@ -53,8 +53,6 @@ class SectionsController {
     public String createSection(@RequestParam String sectionId, @RequestParam String subjectId, @RequestParam Days days,
                                 @RequestParam String start, @RequestParam String end, @RequestParam String roomName, RedirectAttributes redirectAttrs) {
 
-        //Session session = entityManager.unwrap(Session.class);
-        //notNull(session);
         Subject subject = subjectRepo.findById(subjectId).orElseThrow(() -> new NoSuchElementException("no subject found for subjectId " + subjectId));
         Room room = roomRepo.findById(roomName).orElseThrow(() -> new NoSuchElementException("no room found for roomId" + roomName));
         DateTimeFormatter dateTime;
@@ -69,8 +67,6 @@ class SectionsController {
     void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
-
-
 
     @ExceptionHandler(EnlistmentException.class)
     public String handleException(RedirectAttributes redirectAttrs, EnlistmentException e) {

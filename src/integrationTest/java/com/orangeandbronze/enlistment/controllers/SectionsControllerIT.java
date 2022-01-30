@@ -27,14 +27,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 
 class SectionsControllerIT {
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private AdminRepository adminRepository;
-
     private final static String TEST = "test";
 
     @Container
@@ -47,10 +45,15 @@ class SectionsControllerIT {
         registry.add("spring.datasource.password", () -> TEST);
         registry.add("spring.datasource.username", () -> TEST);
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
+
+
     }
 
     @Test
     void createSection_save_to_db() throws Exception {
+        final String start  = "09:00";
+        final String end  = "10:00";
+        final String days = "days";
         final String roomName = "defaultRoom";
 
         jdbcTemplate.update("INSERT INTO room (name, capacity) VALUES (?,?)", roomName, 10);
@@ -59,20 +62,13 @@ class SectionsControllerIT {
 
         Admin admin = adminRepository.findById(DEFAULT_ADMIN_ID).orElseThrow(() ->
                 new NoSuchElementException("No admin w/ admin ID " + DEFAULT_ADMIN_ID + " found in DB."));
-        final String start  = "09:00";
-        final String end  = "10:00";
 
-        mockMvc.perform((post("/sections"))
-                .sessionAttr("admin", admin)
-                .param("sectionId", DEFAULT_SECTION_ID)
-                .param("subjectId", DEFAULT_SUBJECT_ID)
-                .param("days", "MTH")
-                .param("start", start)
-                .param("end", end)
-                .param("roomName", roomName));
+        mockMvc.perform((post("/sections")).sessionAttr("admin", admin)
+                .param("sectionId", DEFAULT_SECTION_ID).param("subjectId", DEFAULT_SUBJECT_ID)
+                .param(days, "MTH").param("start", start).param("end", end).param("roomName", roomName));
 
-        Map<String, Object> results = jdbcTemplate.queryForMap("SELECT * FROM section WHERE section_id = ?",
-                DEFAULT_SECTION_ID);
+        Map<String, Object> results = jdbcTemplate.queryForMap("SELECT * FROM section WHERE section_id = ?", DEFAULT_SECTION_ID);
+
         assertAll(
                 () -> assertEquals(DEFAULT_SECTION_ID, results.get("section_id")),
                 () -> assertEquals(DEFAULT_SUBJECT_ID, results.get("subject_subject_id")),

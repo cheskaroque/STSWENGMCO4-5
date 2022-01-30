@@ -3,6 +3,7 @@ package com.orangeandbronze.enlistment.controllers;
 import com.orangeandbronze.enlistment.domain.Days;
 import com.orangeandbronze.enlistment.domain.Student;
 import com.orangeandbronze.enlistment.domain.StudentRepository;
+import org.junit.Assert;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,6 +27,7 @@ import java.util.concurrent.CountDownLatch;
 import static com.orangeandbronze.enlistment.controllers.UserAction.*;
 import static com.orangeandbronze.enlistment.domain.TestUtils.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 
