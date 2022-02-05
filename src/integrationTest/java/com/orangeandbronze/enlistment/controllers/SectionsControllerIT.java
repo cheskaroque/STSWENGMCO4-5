@@ -59,13 +59,13 @@ class SectionsControllerIT {
         jdbcTemplate.update("INSERT INTO room (name, capacity) VALUES (?,?)", roomName, 10);
         jdbcTemplate.update("INSERT INTO subject (subject_id) VALUES (?)", DEFAULT_SUBJECT_ID);
         jdbcTemplate.update("INSERT INTO admin (id, firstname, lastname) VALUES (?,?,?)", DEFAULT_ADMIN_ID, "firstname", "lastname");
-
+        jdbcTemplate.update("INSERT INTO faculty (faculty_number) VALUES (?)", DEFAULT_FACULTY_NUMBER);
         Admin admin = adminRepository.findById(DEFAULT_ADMIN_ID).orElseThrow(() ->
                 new NoSuchElementException("No admin w/ admin ID " + DEFAULT_ADMIN_ID + " found in DB."));
 
         mockMvc.perform((post("/sections")).sessionAttr("admin", admin)
                 .param("sectionId", DEFAULT_SECTION_ID).param("subjectId", DEFAULT_SUBJECT_ID)
-                .param(days, "MTH").param("start", start).param("end", end).param("roomName", roomName));
+                .param(days, "MTH").param("start", start).param("end", end).param("roomName", roomName).param("facultyNumber", String.valueOf(DEFAULT_FACULTY_NUMBER)));
 
         Map<String, Object> results = jdbcTemplate.queryForMap("SELECT * FROM section WHERE section_id = ?", DEFAULT_SECTION_ID);
 
@@ -75,7 +75,8 @@ class SectionsControllerIT {
                 () -> assertEquals(MTH.ordinal(), results.get("days")),
                 () -> assertEquals(LocalTime.parse(start), LocalTime.parse(results.get("start_time").toString())),
                 () -> assertEquals(LocalTime.parse(end), LocalTime.parse(results.get("end_time").toString())),
-                () -> assertEquals(roomName, results.get("room_name"))
+                () -> assertEquals(roomName, results.get("room_name")),
+                () -> assertEquals(DEFAULT_FACULTY_NUMBER, results.get("instructor_faculty_number"))
         );
 
     }

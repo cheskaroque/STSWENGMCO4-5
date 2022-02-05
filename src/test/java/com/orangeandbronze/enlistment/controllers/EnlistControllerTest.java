@@ -24,7 +24,7 @@ class EnlistControllerTest {
         // When enlist (post) method is called
         SectionRepository sectionRepository = mock(SectionRepository.class);
         Section section = new Section(sectionId, new Subject("X"),
-                MTH830to10, new Room("X",10));
+                MTH830to10, new Room("X",10), newFaculty(1));
         when(sectionRepository.findById(sectionId)).thenReturn(Optional.of(section));
         StudentRepository studentRepository = mock(StudentRepository.class);
         EnlistController controller = new EnlistController();

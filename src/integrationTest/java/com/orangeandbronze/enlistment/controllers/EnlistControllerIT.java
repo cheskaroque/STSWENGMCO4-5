@@ -54,6 +54,8 @@ class EnlistControllerIT {
         registry.add("spring.datasource.url", () -> "jdbc:tc:postgresql:14:///" + TEST);
         registry.add("spring.datasource.password", () -> TEST);
         registry.add("spring.datasource.username", () -> TEST);
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
+
     }
 
     @Test

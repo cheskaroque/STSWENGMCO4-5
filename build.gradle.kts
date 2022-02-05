@@ -1,7 +1,11 @@
+import java.util.*
+import java.io.*
+
 plugins {
     id("org.springframework.boot") version "2.5.6"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.unbroken-dome.test-sets") version "4.0.0"
+    id("org.liquibase.gradle") version "2.1.0"
     java
 }
 
@@ -16,6 +20,19 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+testSets {
+    libraries {
+        create("testCommon")
+    }
+    create("integrationTest") {
+        imports("testCommon")
+    }
+
+    val unitTest by getting {
+        imports("testCommon")
+    }
 }
 
 dependencies {
@@ -35,20 +52,38 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter:$testcontainersVersion")
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
+    //"integrationTestImplementation"(sourceSets.test.get().output)
 
-
+    liquibaseRuntime("org.liquibase:liquibase-core:4.6.1")
+    liquibaseRuntime("info.picocli:picocli:4.6.2")
+    liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:3.0.2")
+    liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:4.6.1")
+    liquibaseRuntime(sourceSets.getByName("main").compileClasspath)
+    liquibaseRuntime(sourceSets.getByName("main").runtimeClasspath)
+    liquibaseRuntime(sourceSets.getByName("main").output)
+    implementation("net.lbruun.springboot:preliquibase-spring-boot-starter:1.1.1")
 }
 
-testSets {
-    libraries {
-        create("testCommon")
-    }
-    create("integrationTest") {
-        imports("testCommon")
-    }
+val prop = Properties().apply {
+    load(FileInputStream(File(rootProject.rootDir,"src/main/resources/application.properties")))
+}
 
-    val unitTest by getting {
-        imports("testCommon")
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+    liquibase {
+        activities.register("main") {
+            this.arguments = mapOf(
+                    "changeLogFile" to "src/main/resources/db/changelog-master.sql",
+                    "url" to prop.getProperty("spring.datasource.url"),
+                    "username" to prop.getProperty("spring.datasource.username"),
+                    "password" to prop.getProperty("spring.datasource.password"),
+                    "driver" to "org.postgresql.Driver",
+                    "referenceUrl" to "hibernate:spring:com.orangeandbronze.enlistment.domain?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
+            )
+        }
+        runList = "main"
     }
 }
 

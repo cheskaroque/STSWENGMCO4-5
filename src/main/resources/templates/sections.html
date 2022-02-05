@@ -42,7 +42,7 @@
                 </div>
                 <div class="container-fluid" id="choices" style="padding: 10px">
                     <div class="col-md-12 row">
-                        <div class="col-md-3" id="subjects"
+                        <div class="col-md-2" id="subjects"
                              style="margin-right: 10px; border-style: solid; border-color: gray; border-radius: 25px; padding: 1%">
                             <h2>Subjects</h2>
                             <div class="radio" th:each="subject : ${subjects}">
@@ -52,7 +52,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-4" id="rooms"
+                        <div class="col-md-3" id="rooms"
                              style="margin-right: 10px; border-style: solid; border-color: gray; border-radius: 25px; padding: 1%">
                             <h2>Rooms</h2>
                             <table class="table table-bordered">
@@ -69,12 +69,27 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3" id="instructors"
+                             style="margin-right: 10px; border-style: solid; border-color: gray; border-radius: 25px; padding: 1%">
+                            <h2>Instructors</h2>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th></th>
+                                    <th>Faculty #</th>
+                                </tr>
+                                <tr th:each="instructor : ${instructors}">
+                                    <td><input form="new_section" name="facultyNumber"
+                                               th:value="${instructor.facultyNumber}" type="radio"></td>
+                                    <td th:text="${instructor.facultyNumber}">1234</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-3">
                             <div class="row" id="schedule"
                                  style="border-style: solid; border-color: gray; border-radius: 25px; padding: 10px">
                                 <h2>Schedule</h2>
                                 <div class="col-md-4">
-                                    <h3>Days</h3>
+                                    <h5>Days</h5>
                                     <select class="form-select" name="days">
                                         <option value="MTH">MTH</option>
                                         <option value="TF">TF</option>
@@ -83,7 +98,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <h3>Start Time</h3>
+                                    <h5>Start Time</h5>
                                     <select class="form-select" name="start">
                                         <option value="08:30">8:30AM</option>
                                         <option value="09:00">9:00AM</option>
@@ -107,7 +122,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <h3>End Time</h3>
+                                    <h5>End Time</h5>
                                     <select class="form-select" name="end">
                                         <option value="09:00">9:00AM</option>
                                         <option value="09:30">9:30AM</option>
