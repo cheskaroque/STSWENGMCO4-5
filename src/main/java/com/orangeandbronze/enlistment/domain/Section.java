@@ -72,6 +72,12 @@ public class Section {
         numberOfStudents++;
     }
 
+    void checkForFacultyMember(Section other) {
+        if(this.instructor.equals(other.instructor)) {
+            checkForScheduleConflict(other);
+        }
+    }
+
     public void decrementNumberOfStudents() {
         numberOfStudents--;
     }

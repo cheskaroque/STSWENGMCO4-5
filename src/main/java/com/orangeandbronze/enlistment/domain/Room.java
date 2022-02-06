@@ -40,8 +40,10 @@ public class Room {
     void addSection(Section newSection) {
         notNull(newSection);
         sections.forEach(currSection -> currSection.checkForScheduleConflict(newSection));
+        sections.forEach(currSection -> currSection.checkForFacultyMember(newSection));
         sections.add(newSection);
     }
+
 
     public String getName() {
         return name;
