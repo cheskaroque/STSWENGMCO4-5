@@ -15,10 +15,12 @@ public class TestUtils {
     public static final String DEFAULT_SECTION_ID = "DefaultSection";
     public static final int DEFAULT_STUDENT_NUMBER = 10;
     public static final int DEFAULT_FACULTY_NUMBER = 1000;
-    public static final Faculty DEFAULT_FACULTY = new Faculty(DEFAULT_FACULTY_NUMBER);
+    public static final String firstName = "firstName";
+    public static final String lastName = "lastName";
+    public static final Faculty DEFAULT_FACULTY = new Faculty(DEFAULT_FACULTY_NUMBER, firstName, lastName);
 
-    public static Faculty newFaculty(int facultyNumber) {
-        return new Faculty(facultyNumber);
+    public static Faculty newFaculty(int facultyNumber, String firstName, String lastName) {
+        return new Faculty(facultyNumber, firstName, lastName);
     }
 
     public static final int DEFAULT_ADMIN_ID = 10;

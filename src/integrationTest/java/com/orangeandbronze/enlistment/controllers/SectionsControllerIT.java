@@ -51,34 +51,39 @@ class SectionsControllerIT {
 
     @Test
     void createSection_save_to_db() throws Exception {
-        final String start  = "09:00";
-        final String end  = "10:00";
-        final String days = "days";
+        // GIVEN: a `subject` and a `room` existing in the database
+        jdbcTemplate.update("INSERT INTO student (student_number, firstname, lastname) VALUES (?,?,?)",
+                DEFAULT_STUDENT_NUMBER, "firstname", "lastname");
+
         final String roomName = "defaultRoom";
+        jdbcTemplate.update("INSERT INTO room (name, capacity) VALUES (?, ?)", roomName, 10);
+        jdbcTemplate.update("INSERT INTO subject (subject_id) VALUES (?)", DEFAULT_SUBJECT.toString());
+        jdbcTemplate.update("INSERT INTO section (section_id, number_of_students, days, start_time, end_time, room_name, subject_subject_id) VALUES (?, ?, ?, ?, ?, ?, ?) ",
+                DEFAULT_SECTION_ID, 0, Days.MTH.ordinal(), LocalTime.of(9, 0),  LocalTime.of(10, 0) , roomName, DEFAULT_SUBJECT.toString());
+        jdbcTemplate.update("INSERT INTO faculty (faculty_number, first_name, last_name) VALUES (?, ?, ?)", DEFAULT_FACULTY_NUMBER, firstName, lastName);
 
-        jdbcTemplate.update("INSERT INTO room (name, capacity) VALUES (?,?)", roomName, 10);
-        jdbcTemplate.update("INSERT INTO subject (subject_id) VALUES (?)", DEFAULT_SUBJECT_ID);
-        jdbcTemplate.update("INSERT INTO admin (id, firstname, lastname) VALUES (?,?,?)", DEFAULT_ADMIN_ID, "firstname", "lastname");
-        jdbcTemplate.update("INSERT INTO faculty (faculty_number) VALUES (?)", DEFAULT_FACULTY_NUMBER);
-        Admin admin = adminRepository.findById(DEFAULT_ADMIN_ID).orElseThrow(() ->
-                new NoSuchElementException("No admin w/ admin ID " + DEFAULT_ADMIN_ID + " found in DB."));
+        // WHEN: the `POST` method on path "/sections" is invoked
+        // with parameters `sectionId`, `subjectId`, `roomName`, `days`, `start`, `end`
+        // and with an `admin` object in session that exists in the database
+        Admin admin = adminRepository.findById(1).orElseThrow(() ->
+                new NoSuchElementException("No admin with id number " + 1 + " found in database."));
+        mockMvc.perform(post("/sections").sessionAttr("admin", admin).param(
+                "sectionId", DEFAULT_SECTION_ID).param("subjectId", DEFAULT_SUBJECT.toString()).param(
+                "days", String.valueOf(Days.MTH.ordinal())).param(
+                "start", String.valueOf(LocalTime.of(9,0))).param(
+                "end", String.valueOf(LocalTime.of(10, 0))).param(
+                "roomName", roomName).param("facultyNumber", String.valueOf(DEFAULT_FACULTY_NUMBER)));
 
-        mockMvc.perform((post("/sections")).sessionAttr("admin", admin)
-                .param("sectionId", DEFAULT_SECTION_ID).param("subjectId", DEFAULT_SUBJECT_ID)
-                .param(days, "MTH").param("start", start).param("end", end).param("roomName", roomName).param("facultyNumber", String.valueOf(DEFAULT_FACULTY_NUMBER)));
-
-        Map<String, Object> results = jdbcTemplate.queryForMap("SELECT * FROM section WHERE section_id = ?", DEFAULT_SECTION_ID);
-
-        assertAll(
-                () -> assertEquals(DEFAULT_SECTION_ID, results.get("section_id")),
-                () -> assertEquals(DEFAULT_SUBJECT_ID, results.get("subject_subject_id")),
-                () -> assertEquals(MTH.ordinal(), results.get("days")),
-                () -> assertEquals(LocalTime.parse(start), LocalTime.parse(results.get("start_time").toString())),
-                () -> assertEquals(LocalTime.parse(end), LocalTime.parse(results.get("end_time").toString())),
-                () -> assertEquals(roomName, results.get("room_name")),
-                () -> assertEquals(DEFAULT_FACULTY_NUMBER, results.get("instructor_faculty_number"))
+        // THEN: a new `section` is added to the database
+        int count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM section WHERE section_id = ? AND number_of_students = ? AND " +
+                        "days = ? AND end_time = ? AND start_time = ? AND version = ? AND room_name = ? AND " +
+                        "subject_subject_id = ?",
+                Integer.class, DEFAULT_SECTION_ID, 0, Days.MTH.ordinal(),
+                LocalTime.of(10, 0),  LocalTime.of(9, 0),
+                0, roomName, DEFAULT_SUBJECT.toString()
         );
 
+        assertEquals(1, count);
     }
-
 }
