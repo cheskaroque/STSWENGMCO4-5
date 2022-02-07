@@ -26,6 +26,10 @@ public class Schedule {
         }
     }
 
+    boolean newSkedOverlap(Schedule other){
+        return this.days.equals(other.days) && this.period.checkSkedOverlap(other.period);
+    }
+
     @Override
     public String toString() {
         return days + " " + period;

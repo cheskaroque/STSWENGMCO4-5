@@ -39,6 +39,10 @@ class Period {
         }
     }
 
+    boolean checkSkedOverlap(Period other){
+        return this.startTime.isBefore(other.endTime) && this.endTime.isAfter(other.startTime);
+    }
+
     @Override
     public String toString() {
         return startTime + " - " + endTime;

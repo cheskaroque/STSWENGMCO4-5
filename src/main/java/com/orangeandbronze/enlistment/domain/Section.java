@@ -1,6 +1,7 @@
 package com.orangeandbronze.enlistment.domain;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.*;
@@ -9,6 +10,7 @@ import java.util.concurrent.locks.*;
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.apache.commons.lang3.Validate.*;
 
+@Component
 @Entity
 public class Section {
     @Id
@@ -45,7 +47,7 @@ public class Section {
         this.instructor = instructor;
     }
 
-    Section(String sectionId, Subject subject, Schedule schedule, Room room, Faculty instructor, int numberOfStudents) {
+    public Section(String sectionId, Subject subject, Schedule schedule, Room room, Faculty instructor, int numberOfStudents) {
         this(sectionId, subject, schedule, room, instructor);
         isTrue(numberOfStudents >= 0,
                 "numberOfStudents must be non-negative, was: " + numberOfStudents);
@@ -72,8 +74,8 @@ public class Section {
         numberOfStudents++;
     }
 
-    void checkForFacultyMember(Section other) {
-        if(this.instructor.equals(other.instructor)) {
+    public void checkForFacultyMember(Section other){
+        if (this.schedule.newSkedOverlap(other.schedule) && this.instructor.equals(other.instructor)){
             checkForScheduleConflict(other);
         }
     }
@@ -113,6 +115,8 @@ public class Section {
     public Room getRoom() {
         return room;
     }
+
+    public Faculty getFaculty(){return instructor;}
 
     public void checkIfFull() {
         room.checkIfAtOrOverCapacity(numberOfStudents);
